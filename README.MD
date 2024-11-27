@@ -7,7 +7,7 @@
 This tool allows remote control over a Linux/Windows/Unix/OSX machine by using any REST based file storage such as AWS S3 as a C2 server.
 
 This is how it works:
-1. The service decides on a DNS record to query based on the current date and the data in this file (DGA)
+1. The service decides on a DNS record to query based on the current date and the text in the Python file (DGA)
 2. The service queries that DNS record (TXT) to get the root URL
 3. The service sends a HTTP/S GET request to that URL to get the encrypted commands list
 4. The service decrypts the commands list (hybrid RSA+AES256) with a hard-coded private key
@@ -26,5 +26,8 @@ You can use the following utils to maintain and manage your little RATs pen:
 - Make sure you have Python 3 installed
 - Install all the required packages listed in `requirements.txt` file
 - Run the remy.py file as the user you would like it to run as a service
+
+### The name...
+The name is of-course a reference to the the cute rat from the great film Rattatouille in which Remy "remote controls" Linguini, but also, Remy could also be thought of as a nickname for "Remote".
 
 Happy cooking! <3!

