@@ -17,6 +17,7 @@ This is how it works:
 
 ### Utils
 You can use the following utils to maintain and manage your little RATs pen:
+- utils/client.py - A console based client from which you can run commands on your RAT pen. To install it simply install the Python3 packages listed in utils/requirements.txt and run client.py. Enjoy. 
 - utils/dga-calc.py - Will print the DNS TXT record that the RAT will try to access today and tomorrow and the one that will be successfully chosen today. If you want the RAT to start using today's or tomorrow's DNS record you can register it now.
 - utils/keys-generator.py - You can use that tool to generate two sets of key sets, one for the commands list and another for the commands outputs. After doing so remember to update the hard coded keys (private key for decrypting commands list and public key for encrypting commands outputs).
 - utils/decryptor.py - Can decrypt the commands list or commands outputs files just like Remy does/expects it
