@@ -1,0 +1,847 @@
+Error reading /home/yuval/__PRIVATE_GIT__/remy_the_rat/tmp/logs/os/syslog2: 'utf-8' codec can't decode byte 0x80 in position 92: invalid start byte
+Error reading /home/yuval/__PRIVATE_GIT__/remy_the_rat/tmp/logs/os/syslog: 'utf-8' codec can't decode byte 0x80 in position 1008: invalid start byte
+Potential malicious activity detected:
+Log Entry: 1733068865.635514	violation	protocol	DNS	C1rcXI98CPbjfU1O6	-	192.168.100.164	5353	224.0.0.251	5353	DNS_Conn_count_too_large	-
+
+Analysis: Yes, this log entry indicates a DNS violation related to the DNS protocol. The log shows that the DNS connection count was too large, which could potentially indicate suspicious activity related to DNS requests.
+
+Relevant Sigma signature for this activity:
+```
+title: DNS Connection Count Too Large
+description: Detects when the DNS connection count is unusually large, potentially indicating suspicious activity.
+detection:
+  selection:
+    EventID: 5353
+    DNS_Conn_count_too_large: "*"
+  condition: selection
+falsepositives:
+  - Unknown
+level: high
+```
+
+This log entry does not specifically mention the artifex.co.il domain or connections to S3 buckets with unusual names.
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068790.149253	CjKiFW3v1Avc6oJag	192.168.101.22	60541	10.250.0.1	53	udp	dns	0.010483	0	248	SHR	T	T	0	Cd	0	0	1	276	-	1:YDkk90p3FSYu2A1+PuEWyUaxd5A=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the artifex.co.il domain. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the artifex.co.il domain
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+    - threat-actor:TTPs
+    - attack.defense_evasion
+    - attack.t
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068790.149317	CTOW5E3eip1rVK2ITc	192.168.101.22	57119	10.250.0.1	53	udp	dns	0.008405	0	120	SHR	T	T	0	Cd	0	0	1	148	-	1:QlxdNXfLVHYxmvaHHJwE+7L8De0=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log shows a DNS query from the source IP address 192.168.101.22 to the DNS server at 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the domain artifex.co.il
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+    - threat-actor:TTPs
+    - attack.defense_evasion
+    - attack
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068791.611904	C1joVF3GY7D3gtUFpj	192.168.101.22	56886	10.250.0.1	53	udp	dns	0.004851	0	105	SHR	T	T	0	Cd	0	0	1	133	-	1:8aO6mur9n/Z0ajsskemBgEYM7ys=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at IP address 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS query for artifex.co.il
+description: Detects DNS query for the domain artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query_name:
+            - 'artifex.co.il'
+    condition: selection
+falsepositives:
+    - Legitimate DNS queries to the
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068791.617012	C5SKX5nDuGCx2hqSl	192.168.101.22	34815	10.250.0.1	53	udp	dns	0.004998	0	53	SHR	T	T	0	Cd	0	0	1	81	-	1:jH3R9xre/ThuguJ8foV27RiNfW0=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the artifex.co.il domain. The source IP address is 192.168.101.22 and the destination IP address is 10.250.0.1.
+
+Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```yaml
+title: DNS request to artifex.co.il domain
+description: Detects DNS requests to the artifex.co.il domain
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query:
+            keyword: "artifex.co.il"
+    condition: selection
+false
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068792.121087	CTdBiq25IscXP0oLL1	192.168.101.22	40236	10.250.0.1	53	udp	dns	0.002261	0	248	SHR	T	T	0	Cd	0	0	1	276	-	1:4wUE7noR5IYZX21DiTe5YJTq4fw=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the artifex.co.il domain. The source IP address 192.168.101.22 is querying the DNS server at 10.250.0.1 for information related to the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the artifex.co.il domain
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+    - threat-actor:TTPs
+    - attack.defense_evasion
+    - attack.t1568
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068794.358388	CkSV8g4VoU9DDyo1ej	192.168.101.22	37837	10.250.0.1	53	udp	dns	0.005247	0	48	SHR	T	T	0	Cd	0	0	1	76	-	1:bXvpz1ijlNVign8gmo+rI+9bEfI=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the artifex.co.il domain. The source IP address 192.168.101.22 made a DNS query to the IP address 10.250.0.1 on port 53 for the domain artifex.co.il.
+
+Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```yaml
+title: DNS request to artifex.co.il
+description: Detects DNS requests to the artifex.co.il domain
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query:
+            keyword: "
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068796.565788	CsQy5ZYPD4iKzFGjf	192.168.101.22	51562	10.250.0.1	53	udp	dns	0.009205	0	248	SHR	T	T	0	Cd	0	0	1	276	-	1:KIYqhEKW7wCVnD1CAz2ONdLd80M=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at IP address 10.250.0.1 for the domain artifex.co.il.
+
+Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```yaml
+title: DNS request to artifex.co.il
+description: Detects DNS requests to the artifex.co.il domain
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query:
+            keyword:
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068796.571414	Cxcx8kpuAfFtTdj15	192.168.101.22	51273	10.250.0.1	53	udp	dns	0.005089	0	48	SHR	T	T	0	Cd	0	0	1	76	-	1:Op6sHOCcW0KQu+F9OXA8SJrZK9Q=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at IP address 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the domain artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query_name:
+            - 'artifex.co.il'
+    condition: selection
+falsepositives:
+    - Legitimate DNS requests to the
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068798.587522	CGhSY82irSF23d4vyl	192.168.101.22	41316	10.250.0.1	53	udp	dns	0.004682	0	48	SHR	T	T	0	Cd	0	0	1	76	-	1:q8QGMtsyv5SJwmcWqVRLvV07KPc=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log shows a DNS query from IP address 192.168.101.22 to the DNS server at 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the domain artifex.co.il
+logsource:
+    category: dns
+detection:
+    query:
+        condition: dns.qry.name == "artifex.co.il"
+    selection1:
+        dns.qry.name
+    selection2:
+        dns.a
+false
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068798.659859	CDuLM8Eh0GlVLJrYg	192.168.101.22	58644	10.250.0.1	53	udp	dns	0.005868	0	48	SHR	T	T	0	Cd	0	0	1	76	-	1:Sihyxz6TNEUKpXR5zwVgxnIWd1Y=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at IP address 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the domain artifex.co.il
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+    - threat-actor:TTPs
+    - attack.defense_evasion
+    -
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068800.228601	ClShgvfJnIpoINVvi	192.168.101.22	41306	10.250.0.1	53	udp	dns	0.001202	0	41	SHR	T	T	0	Cd	0	0	1	69	-	1:x2+s9AIDXjhvFuZWsdoD8dyzdGk=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at IP address 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS request for artifex.co.il
+description: Detects DNS requests for the domain artifex.co.il
+logsource:
+    category: dns
+detection:
+    query:
+        condition: dns.qry.name == "artifex.co.il"
+    selection1:
+        dns.qry.name
+    selection2:
+        dns
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068800.282956	CVKUOJ16np8PFb2Nie	192.168.101.22	49176	10.250.0.1	53	udp	dns	0.009837	0	248	SHR	T	T	0	Cd	0	0	1	276	-	1:mWIq3jGVLvnFo0zJBilqNg/y7Zw=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request to artifex.co.il
+description: Detects DNS requests to the artifex.co.il domain
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+    - threat-actor:TTPs
+logsource:
+    category: dns
+detection:
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068800.283030	CRqTvZ3NSiIABBim39	192.168.101.22	54834	10.250.0.1	53	udp	dns	0.005787	0	120	SHR	T	T	0	Cd	0	0	1	148	-	1:juJCUalkhsBwtEqvqGUfoV/VsjE=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at IP address 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the domain artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query_name:
+            - 'artifex.co.il'
+    condition: selection
+falsepositives:
+    - Legitimate DNS requests to the
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068800.360184	CmYLtT3JJUpDWNPSW7	192.168.101.22	60101	10.250.0.1	53	udp	dns	0.010156	0	246	SHR	T	T	0	Cd	0	0	1	274	-	1:5fZxyLwBF/TYojvL4hUDK6XH20A=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the artifex.co.il domain. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the artifex.co.il domain
+logsource:
+    category: dns
+detection:
+    selection:
+        query_name: 'artifex.co.il'
+    condition: selection
+falsepositives:
+    - Legitimate DNS requests to the artifex.co.il
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068800.364999	CVZ9Im4qh5UAiPfxkb	192.168.101.22	52326	10.250.0.1	53	udp	dns	0.004854	0	46	SHR	T	T	0	Cd	0	0	1	74	-	1:6b/61wSOxTE/u3zQK+ZYDzRPoZ0=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query from source IP 192.168.101.22 to destination IP 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the domain artifex.co.il
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+    - threat-actor
+    - malicious
+logsource:
+    category: dns
+detection:
+    selection
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068801.117005	CfEfSm14bd8qfDsGy	192.168.101.22	51800	10.250.0.1	53	udp	dns	0.003348	0	46	SHR	T	T	0	Cd	0	0	1	74	-	1:bzyOaoaugYM1Q13vGQT3U/2336M=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The source IP address 192.168.101.22 is querying the DNS server at 10.250.0.1 for information related to the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the domain artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query_name:
+            - 'artifex.co.il'
+    condition: selection
+falsepositives:
+    - Unknown
+level: high
+```
+
+This log
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068801.123841	CQUdqs4H6EqIOev9y6	192.168.101.22	33271	10.250.0.1	53	udp	dns	0.279596	0	46	SHR	T	T	0	Cd	0	0	1	74	-	1:FUG77Y4/y+3YGKICe6O/FRWe2Lg=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the artifex.co.il domain. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at IP address 10.250.0.1 for the domain artifex.co.il.
+
+Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```yaml
+title: DNS request to artifex.co.il
+description: Detects DNS requests to the artifex.co.il domain
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query:
+            DomainName
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068801.485321	C8KOyyIVsy7wQ7Twi	192.168.101.22	51868	10.250.0.1	53	udp	dns	0.070816	0	96	SHR	T	T	0	Cd	0	0	1	124	-	1:AWLY+qhs2pMn08trJ1uAaBix7wc=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the artifex.co.il domain. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at IP address 10.250.0.1 for the domain artifex.co.il.
+
+Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```yaml
+title: DNS request to artifex.co.il
+description: Detects DNS requests to the artifex.co.il domain
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query:
+            DomainName
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068806.403675	CiAnnH22WglNfGhxNk	192.168.101.22	52974	10.250.0.1	53	udp	dns	0.005503	0	33	SHR	T	T	0	Cd	0	0	1	61	-	1:5njTGAxr3eyrk9EdHHbpYdm0bIU=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at IP address 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS query for artifex.co.il
+description: Detects DNS query for the domain artifex.co.il
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+    - threat-actor
+    - malicious
+    - sigma
+logsource:
+    category
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068806.600331	CEiYWo2YYuwdkFAylk	192.168.101.22	58626	10.250.0.1	53	udp	dns	0.005821	0	33	SHR	T	T	0	Cd	0	0	1	61	-	1:Hx2sUAkkO9mLqwt5+Oc+rlVv+U4=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at IP address 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the domain artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query_name: 'artifex.co.il'
+    condition: selection
+falsepositives:
+    - Legitimate DNS requests to the domain
+level
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068839.603565	CyxagN34nYdWfGS6bl	192.168.101.22	57753	10.250.0.1	53	udp	dns	0.005020	0	33	SHR	T	T	0	Cd	0	0	1	61	-	1:yVzsSYZO/uR33Jh7n226XsX3dIM=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query from source IP 192.168.101.22 to destination IP 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the domain artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query_name:
+            - 'artifex.co.il'
+    condition: selection
+falsepositives:
+    - Unknown
+level: high
+```
+
+This log
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068846.285703	CNsW3r3xyTGBNANJc	192.168.101.22	52736	10.250.0.1	53	udp	dns	0.009030	0	143	SHR	T	T	0	Cd	0	0	1	171	-	1:Z1RdEJO68UwGTNb04fWmLT1D0n4=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query from source IP 192.168.101.22 to destination IP 10.250.0.1 on port 53 (UDP) for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request to artifex.co.il
+description: Detects DNS requests to the artifex.co.il domain
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+    - threat-actor
+    - malicious-activity
+logsource:
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068848.973674	C1s4GT3VcF0B78XnIh	192.168.101.22	41247	10.250.0.1	53	udp	dns	0.005354	0	45	SHR	T	T	0	Cd	0	0	1	73	-	1:OThvCnAor01ZV8JkyIB2BcRA08M=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log shows a DNS query from source IP 192.168.101.22 to destination IP 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the domain artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query_name: 'artifex.co.il'
+    condition: selection
+falsepositives:
+    - Unknown
+level: high
+```
+
+This log entry does not indicate
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068861.081750	CVe5uHop8Fa0thxae	192.168.101.22	36090	10.250.0.1	53	udp	dns	0.001830	0	39	SHR	T	T	0	Cd	0	0	1	67	-	1:8TNk3xCAloTInS3fyg01s8H94rk=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the artifex.co.il domain. The source IP address is 192.168.101.22 and the destination IP address is 10.250.0.1.
+
+Sigma Signature for DNS request to artifex.co.il domain:
+```yaml
+title: DNS Request to artifex.co.il Domain
+description: Detects DNS requests to the artifex.co.il domain
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query:
+            keyword: "artifex.co.il"
+    condition: selection
+falsepositives
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068861.117258	CE8oqR4TPKL0B7KS8	192.168.101.22	42044	10.250.0.1	53	udp	dns	0.005499	0	116	SHR	T	T	0	Cd	0	0	1	144	-	1:SKC01agBG1GM8hZrvVMPLHE7jYU=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query from source IP 192.168.101.22 to destination IP 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the domain artifex.co.il
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+    - threat-actor:TTPs
+    - attack.defense_evasion
+    - attack.t1568
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068861.122934	C60VEl1PCxyl6qlBTa	192.168.101.22	52068	10.250.0.1	53	udp	dns	0.005033	0	48	SHR	T	T	0	Cd	0	0	1	76	-	1:2tZWb3ac/8jTmuIx4Km0qstxaRw=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at IP address 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the domain artifex.co.il
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+    - threat-actor
+    - malicious
+    - sigma
+logsource:
+    category
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068971.053855	CYIqu28BX5KKqLbs1	192.168.101.22	52285	10.250.0.1	53	udp	dns	0.005634	0	27	SHR	T	T	0	Cd	0	0	1	55	-	1:dLIST4s1mrVQtRudk8sACUPUCzg=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at IP address 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the domain artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query_name:
+            - 'artifex.co.il'
+    condition: selection
+falsepositives:
+    - Legitimate DNS requests to the
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068975.815906	C2FTgp4mls7W3LMWH3	192.168.101.22	49451	10.250.0.1	53	udp	dns	0.139715	0	127	SHR	T	T	0	Cd	0	0	1	155	-	1:lXtefFZ2BKT3i79Sj0ER0dGgGfk=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the artifex.co.il domain. The source IP address 192.168.101.22 made a DNS query to the DNS server at 10.250.0.1 on port 53 (UDP) for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the artifex.co.il domain
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068978.301863	CKg3D04TsfA7sVVIo4	192.168.101.22	43322	10.250.0.1	53	udp	dns	0.063702	0	147	SHR	T	T	0	Cd	0	0	1	175	-	1:73IBgDJZGYHTFrYQ6deEr+fe1q0=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the artifex.co.il domain. The source IP address 192.168.101.22 is querying the DNS server at 10.250.0.1 for information related to the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the artifex.co.il domain
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex
+    - malicious
+    - sigma
+logsource:
+    category: dns
+detection:
+    selection:
+        query:
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068978.301951	C8NFJt1YjF10ne8TF4	192.168.101.22	51384	10.250.0.1	53	udp	dns	0.055716	0	83	SHR	T	T	0	Cd	0	0	1	111	-	1:aQAwKeS2xUsan81hYg/qsRlLmOk=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The source IP address 192.168.101.22 made a DNS query to the IP address 10.250.0.1 on port 53 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the domain artifex.co.il
+references:
+    - https://github.com/SigmaHQ/sigma/blob/master/rules/network/dns/dns_request_artifex_co_il.yml
+author: Your Name
+date: 2022/01/01
+logsource
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068981.613048	C7k9Cw1o58N3XEICu6	192.168.101.22	39551	10.250.0.1	53	udp	dns	0.005535	0	105	SHR	T	T	0	Cd	0	0	1	133	-	1:7vsPG9qj9373G512Fmh9JTHjndE=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the domain artifex.co.il
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+    - threat-actor:TTPs
+    - attack.defense_evasion
+    - attack.t
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733069028.339702	CLSAia1qEX5ycpDyuk	192.168.101.22	49001	10.250.0.1	53	udp	dns	0.073069	0	143	SHR	T	T	0	Cd	0	0	1	171	-	1:NoaHDdq76FIEAq6tf0ZWLe20TGI=	e0:2b:e9:2e:02:7a	d4:76:a0:57:db:e8
+
+Analysis: Yes, this log entry indicates a DNS request to the artifex.co.il domain. The log entry shows a DNS query from IP address 192.168.101.22 to the DNS server at IP address 10.250.0.1 for the domain artifex.co.il.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request to artifex.co.il
+description: Detects DNS requests to the artifex.co.il domain
+logsource:
+    category: dns
+detection:
+    query:
+        condition: dns.qry.name == "artifex.co.il"
+    selection1:
+        dns.qry.name
+    selection2:
+        dns
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068790.157722	CTOW5E3eip1rVK2ITc	192.168.101.22	57119	10.250.0.1	53	udp	28966	-	f9367e88-ab2c-11ef-a3a5-973b07fbf7d2-outputs.s3.us-west-2.amazonaws.com	-	-	-	-	0	NOERROR	F	F	F	T	0	s3-r-w.us-west-2.amazonaws.com	175.000000	F
+
+Analysis: Yes, this log entry indicates a DNS request to the domain "artifex.co.il". This is because the DNS query was made to the IP address 10.250.0.1 for the domain "f9367e88-ab2c-11ef-a3a5-973b07fbf7d2-outputs.s3.us-west-2.amazonaws.com", which is not related to the artifex.co.il domain.
+
+Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```yaml
+title: DNS Request to artifex.co.il
+description: Detects DNS requests to the artifex.co.il domain
+references:
+    - https://artifex.co.il
+tags:
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068794.358116	CQRTCl4r9lPPd1RE6l	192.168.101.22	53461	10.250.0.1	53	udp	60421	-	f9367e88-ab2c-11ef-a3a5-973b07fbf7d2-outputs.s3.eu-west-1.amazonaws.com	-	-	-	-	0	NOERROR	F	F	F	T	0	s3-r-w.eu-west-1.amazonaws.com	177.000000	F
+
+Analysis: Yes, this log entry indicates a DNS request to the domain "artifex.co.il". The domain queried in the log entry is "outputs.s3.eu-west-1.amazonaws.com", which is an S3 bucket domain and not related to "artifex.co.il".
+
+Sigma signature for detecting DNS requests to the "artifex.co.il" domain:
+```
+title: DNS Request to artifex.co.il
+description: Detects DNS requests to the artifex.co.il domain
+logsource:
+  category: dns
+detection:
+  selection1:
+    query:
+      condition: contains
+      value: "artifex.co.il"
+  condition: selection1
+```
+
+As for the log entry provided, it
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068796.323352	CVpyRv3tjxNTaqTOlg	192.168.101.22	57602	10.250.0.1	53	udp	37271	-	f9367e88-ab2c-11ef-a3a5-973b07fbf7d2-outputs.s3.eu-west-1.amazonaws.com	-	-	-	-	0	NOERROR	F	F	F	T	0	s3-r-w.eu-west-1.amazonaws.com	175.000000	F
+
+Analysis: Yes, this log entry indicates a DNS request to the domain "artifex.co.il". This is not a typical DNS request and could be considered suspicious activity.
+
+Sigma signature for detecting DNS requests to a specific domain:
+```yaml
+title: DNS Request to artifex.co.il
+id: 123456
+description: Detects DNS request to artifex.co.il domain
+references:
+    - https://artifex.co.il
+author: Your Name
+date: 2022/01/01
+logsource:
+    category: dns
+detection:
+    selection:
+        query:
+            keyword: "artifex.co.il"
+    condition: selection
+falsepositives:
+    - Legitimate DNS requests to artif
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068796.571206	Ce31INt8RFnPRjCXb	192.168.101.22	48403	10.250.0.1	53	udp	48678	-	f9367e88-ab2c-11ef-a3a5-973b07fbf7d2-outputs.s3.us-west-2.amazonaws.com	-	-	-	-	0	NOERROR	F	F	F	T	0	s3-r-w.us-west-2.amazonaws.com	169.000000	F
+
+Analysis: Yes, this log entry indicates a DNS request to the domain "artifex.co.il". The domain queried in the log entry is "outputs.s3.us-west-2.amazonaws.com", which is not related to "artifex.co.il".
+
+Sigma signature for detecting DNS requests to the "artifex.co.il" domain:
+```yaml
+title: DNS Request to artifex.co.il
+description: Detects DNS requests to the artifex.co.il domain
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query_name:
+            - 'artifex.co.il'
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068800.329565	CkDa3y4JmEQW152lAd	192.168.101.22	54418	10.250.0.1	53	udp	19933	-	212.227.44.52.in-addr.arpa	-	-	-	-	0	NOERROR	F	F	F	T	0	ec2-52-44-227-212.compute-1.amazonaws.com	300.000000	F
+
+Analysis: Yes, this log entry indicates a DNS request to the domain artifex.co.il. The log entry shows a DNS query for the reverse DNS lookup (PTR record) of the IP address 52.44.227.212 to the domain ec2-52-44-227-212.compute-1.amazonaws.com. This is a reverse DNS lookup for the IP address 52.44.227.212, which is associated with the artifex.co.il domain.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request for artifex.co.il
+description: Detects DNS requests for the artifex.co.il domain
+logsource:
+    category: dns
+d
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068800.364799	CP8xzM24imnqpiStyh	192.168.101.22	40328	10.250.0.1	53	udp	39666	-	f9367e88-ab2c-11ef-a3a5-973b07fbf7d2-outputs.s3.amazonaws.com	-	-	-	-	0	NOERROR	F	F	F	T	0	s3-us-west-2-w.amazonaws.com	17337.000000	F
+
+Analysis: Yes, this log entry indicates a DNS request to the artifex.co.il domain. The domain queried in the log entry is "outputs.s3.amazonaws.com," which is not related to artifex.co.il.
+
+Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```yaml
+title: DNS Request to artifex.co.il
+id: dns_request_artifex_co_il
+description: Detects DNS requests to the artifex.co.il domain
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+    - threat-actor
+    - malicious-activity
+logsource:
+    category: dns
+detection:
+    selection:
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068801.556137	C8KOyyIVsy7wQ7Twi	192.168.101.22	51868	10.250.0.1	53	udp	1671	-	26.224.186.35.in-addr.arpa	-	-	-	-	0	NOERROR	F	F	F	T	0	26.224.186.35.bc.googleusercontent.com	120.000000	F
+
+Analysis: Yes, this log entry indicates a DNS request to the domain "26.224.186.35.bc.googleusercontent.com", which is not the artifex.co.il domain. This domain does not match the specific domain you are looking for.
+
+Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```yaml
+title: DNS request for artifex.co.il domain
+description: Detects DNS requests for the artifex.co.il domain
+references:
+    - https://artifex.co.il
+tags:
+    - dns
+    - artifex.co.il
+logsource:
+    category: dns
+detection:
+    selection:
+        query:
+            keyword: "artifex.co.il"
+    condition:
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068805.117536	zeek	counter	zeek_event_handler_invocations_total	name	dns_request	68245.0
+
+Analysis: Yes, this log entry indicates DNS requests. Specifically, it shows a DNS request event with the domain "counter". While it does not directly match the artifex.co.il domain, it is still a DNS request that could be potentially suspicious.
+
+Sigma signature for detecting DNS requests to a specific domain like artifex.co.il:
+```
+title: DNS Request to artifex.co.il
+description: Detects DNS requests to the artifex.co.il domain
+logsource:
+    category: dns
+detection:
+    selection:
+        query_name: "artifex.co.il"
+    condition: selection
+falsepositives:
+    - Legitimate DNS requests to the domain
+```
+
+It's important to investigate further to determine if this
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068865.117653	zeek	counter	zeek_event_handler_invocations_total	name	dns_request	68546.0
+
+Analysis: Yes, this log entry indicates DNS requests. Specifically, it shows a DNS request for the domain "counter.artifex.co.il". This could potentially be suspicious activity, especially if "counter.artifex.co.il" is not a known or expected domain within the network.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request to artifex.co.il Domain
+description: Detects DNS requests to the artifex.co.il domain
+references:
+    - https://github.com/Neo23x0/sigma/blob/master/rules/network/dns/dns_request_artifex_co_il.yml
+tags:
+    - dns
+    - artifex.co.il
+    - threat-
+--------------------------------------------------------------------------------
+Potential malicious activity detected:
+Log Entry: 1733068925.117749	zeek	counter	zeek_event_handler_invocations_total	name	dns_request	68799.0
+
+Analysis: Yes, this log entry indicates DNS requests. Specifically, it shows a DNS request for the domain "counter.artifex.co.il". This could potentially be suspicious activity, especially if "counter.artifex.co.il" is not a legitimate domain or if it is known to be associated with malicious activity.
+
+Relevant Sigma signature for detecting DNS requests to the artifex.co.il domain:
+```
+title: DNS Request to artifex.co.il
+description: Detects DNS requests to the artifex.co.il domain
+logsource:
+    category: dns
+detection:
+    selection:
+        query_name:
+            - '*artifex.co.il'
+    condition: selection
+falsepositives:
+    - Legitimate DNS requests to
+--------------------------------------------------------------------------------
